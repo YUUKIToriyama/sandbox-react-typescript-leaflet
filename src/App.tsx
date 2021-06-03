@@ -3,6 +3,7 @@ import './App.css';
 
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import "leaflet.control.opacity";
 
 function App() {
   const refMapContainer = React.useRef<HTMLDivElement>(null);
@@ -10,6 +11,7 @@ function App() {
   let baseLayer: L.TileLayer;
   let overlays: { [key: string]: L.Layer };
   let layerControl: L.Control.Layers;
+  let opacityControl: any;
 
   // コンポーネント読み込み時に実行
   React.useEffect(() => {
@@ -29,6 +31,12 @@ function App() {
     layerControl = L.control.layers({ "ベースマップ": baseLayer }, overlays, {
       position: "topleft",
       collapsed: false
+    }).addTo(map);
+    // 透明度コントロールを追加
+    // @ts-ignore
+    opacityControl = L.control.opacity(overlays, {
+      position: "topleft",
+      label: "透明度を変更"
     }).addTo(map);
   }, []);
 
