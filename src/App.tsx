@@ -1,24 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
 function App() {
+  const refMapContainer = React.useRef<HTMLDivElement>(null);
+  let map: L.Map;
+  let baseLayer: L.TileLayer;
+  let overlays: { [key: string]: L.Layer };
+  let layerControl: L.Control.Layers;
+
+  // コンポーネント読み込み時に実行
+  React.useEffect(() => {
+    // ベースレイヤーと地図コンテナを準備
+    baseLayer = L.tileLayer("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png");
+    map = L.map(refMapContainer.current!!, {
+      center: [35, 135],
+      zoom: 15,
+      layers: [baseLayer]
+    });
+    // 重ねるレイヤーを追加する
+    overlays = {
+      "aerialPhoto": L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/airphoto/{z}/{x}/{y}.png"),
+      "aerialPhoto2": L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg")
+    };
+    // レイヤーコントロールを追加
+    layerControl = L.control.layers({ "ベースマップ": baseLayer }, overlays, {
+      position: "topleft",
+      collapsed: false
+    }).addTo(map);
+  }, []);
+
+  const mapStyle: React.CSSProperties = {
+    width: "100%",
+    height: "100vh"
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div ref={refMapContainer} style={mapStyle}></div>
     </div>
   );
 }
