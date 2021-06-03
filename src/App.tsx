@@ -11,7 +11,7 @@ function App() {
   let baseLayer: L.TileLayer;
   let overlays: { [key: string]: L.Layer };
   let layerControl: L.Control.Layers;
-  let opacityControl: any;
+  let opacityControl: L.Control.Opacity;
 
   // コンポーネント読み込み時に実行
   React.useEffect(() => {
@@ -33,7 +33,6 @@ function App() {
       collapsed: false
     }).addTo(map);
     // 透明度コントロールを追加
-    // @ts-ignore
     opacityControl = L.control.opacity(overlays, {
       position: "topleft",
       label: "透明度を変更"
